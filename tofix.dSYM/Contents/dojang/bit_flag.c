@@ -17,4 +17,10 @@ int main()
     flag = 0;
     flag |= 1; // 0000 0001 마스크와 비트 비트 OR로 여덟 번째 비트를 켬
     printf("%u", flag);
+    
+    flag = 7;
+    flag ^= 2;
+    flag ^= 8;
+    printf("%u", flag);
+
 }
