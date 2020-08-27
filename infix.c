@@ -64,10 +64,10 @@ int Prec(char ch)
             return 2;
         case '^':
             return 3;
-        return -1;
+        
     }
 
-    return ch;
+    return -1;
 }
 
 int infixToPostfix(char* exp)
@@ -102,8 +102,8 @@ int infixToPostfix(char* exp)
             while (!isEmpty(stack) && Prec(exp[i]) <= Prec(peek(stack)))
             {
                 exp[++k] = pop(stack);
-            push(stack, exp[i]);
             }
+            push(stack, exp[i]);
             
         }
     }

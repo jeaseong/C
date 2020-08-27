@@ -9,12 +9,12 @@ typedef struct stackNode
 
 StackNode* createStackNode(int data)
 {
-    StackNode* node = (StackNode*)malloc(sizeof(StackNode));
+    StackNode* node = (StackNode*)malloc(sizeof(StackNode)); //8byte
     node->data = data;
     node->next = NULL;
     return node;
 }
-
+// padinfg
 int isEmpty(StackNode* root)
 {
     return !root;
@@ -47,6 +47,8 @@ int pop(StackNode** root)
     int popped;
     popped = (*root)->data;
     (*root) = (*root)->next;
+
+    
     return popped;
 }
 

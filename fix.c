@@ -3,6 +3,7 @@
 #include <string.h>
 #include <ctype.h>
 
+
 typedef struct Stack
 {
     int top;
@@ -12,22 +13,21 @@ typedef struct Stack
 
 Stack* createStack(int capacity)
 {
-    Stack* stack = (Stack*)malloc(sizeof(Stack));
-
-    if(!stack)
-        return NULL;
-
+    Stack* stack =(Stack*)malloc(sizeof(Stack));
+    stack ->capacity = capacity;
     stack->top = -1;
-    stack->capacity = capacity;
-
-    stack->array = (int*)malloc(sizeof(int) * stack->capacity);
-
+    stack->array = (int*)malloc(stack->capacity * sizeof(int));
     return stack;
 }
 
 int isEmpty(Stack* stack)
 {
-    return stack->top = -1;
+    return stack->top == -1;
+}
+
+int isFull(Stack* stack)
+{
+    return stack->top == stack->capacity-1;
 }
 
 char peek(Stack* stack)
@@ -35,16 +35,23 @@ char peek(Stack* stack)
     return stack->array[stack->top];
 }
 
-void push(Stack* stack, char item)
+void push(Stack* stack, int item)
 {
-    stack->array[++stack->top] = item;
+    if(isFull(stack))
+        return;
+    stack->array[++(stack->top)] = item;
 }
 
-char pop(Stack* stack)
+int pop(Stack* stack)
 {
-    if(!isEmpty(stack))
-        return stack->array[++stack->top];
-    return '$';
+    if(isEmpty(stack))
+        return -9999;
+    return stack->array[(stack->top)--];
+}
+
+int isoperand(char ch)
+{
+    return (ch >= 'a' && ch <= 'z') || (ch >= 'A' && ch <= 'Z');
 }
 
 int Prec(char ch)
@@ -52,11 +59,9 @@ int Prec(char ch)
     switch(ch)
     {
         case '+':
-            return 1;
         case '-':
             return 1;
         case '*':
-            return 2;
         case '/':
             return 2;
         case '^':
@@ -65,27 +70,20 @@ int Prec(char ch)
     return -1;
 }
 
-void infixToPostfix(char* exp)
+int infixToPostfix(char* exp)
 {
-    
     Stack* stack = createStack(strlen(exp));
-    
-    int k = stack->top;
-    if(!stack)
-        return;
 
-    for(int i = 0, k = -1; exp[i]; ++i)
+    int i, k;
+    
+    if(!stack)
+        return -1;
+
+    for(i = 0, k = -1; exp[i]; ++i)
     {
         if(isalnum(exp[i]))
-        {
             exp[++k] = exp[i];
-        }
-        else if(exp[i] == '+' || exp[i] == '-' || exp[i] == '*' || exp[i] == '/' || exp[i] == '^')
-        {
-            while(!isEmpty(stack) && Prec(exp[i]) <= Prec(peek(stack)))
-                exp[++k] = pop(stack);
-            push(stack, exp[i]);
-        }
+
         else if(exp[i] == '(')
         {
             push(stack, exp[i]);
@@ -94,20 +92,33 @@ void infixToPostfix(char* exp)
         {
             while(!isEmpty(stack) && peek(stack) != '(')
                 exp[++k] = pop(stack);
+
             if(!isEmpty(stack) && peek(stack) == '(')
                 pop(stack);
         }
-
+        else
+        {
+            while(!isEmpty(stack) && Prec(exp[i]) <= Prec(peek(stack)))
+            {
+                exp[++k] = pop(stack);
+            }
+            push(stack, exp[i]);
+        }
     }
 
     while(!isEmpty(stack))
+    {
         exp[++k] = pop(stack);
-    printf("%s",exp);
+    }
+    exp[++k] = '\0';
+    printf("%s", exp);
+
+    return 0;
 }
 
 int main()
 {
-    char exp[] = "a+b";
+    char exp[] = "a+b*(c^d-e)^(f+g*h)-i";
     infixToPostfix(exp);
     return 0;
 }

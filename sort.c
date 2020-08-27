@@ -9,26 +9,33 @@ int compare(const void *a, const void *b)
 
 int main()
 {
-    int number[11] ={2,3,5,10,15,89,4,5,6,11,18};
+
+
+    int number[] ={2,3,10,5,15,5,4,5,11,18,18};
     int numSize = sizeof(number) / sizeof(int);
+    int i;
 
     qsort(number, numSize, sizeof(int), compare);
 
     
 
-    for(int i = 0; i < numSize - 1; i++)
+    for(i = 0; i < numSize - 1; i++)
     {
-        if(number[i] == number[i + 1])
+        for(int j = 0; j < numSize - 1; j++)
         {
-            memmove(number+i + 1, number + i + 2, numSize - i);
+                if(number[j] == number[j + 1])
+            {
+                memmove(number + j + 1, number+ j + 2, sizeof(int));
+                
+            }
         }
-        
-    }
-    for(int i = 0; i < numSize - 1; i++)
-    {
-        printf("%d\n", number[i]);
     }
 
+    for(int i = 0; i < numSize - 1; i++)
+    {
+        if(number[i] != number[i+1])
+            printf("%d\n", number[i]);
+    }
     return 0;
 }
 
